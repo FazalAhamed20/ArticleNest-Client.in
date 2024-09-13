@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ThumbsUp, ThumbsDown, X, Shield, Calendar, Tag, ChevronLeft, ChevronRight, User } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import baseAxios from '../../config/axiosInstance';
-import { getUserId } from '../../helper/decodeToken';
+
 import ConfirmationModal from '../../utils/modal/confirmationModal';
 
 
@@ -33,9 +33,11 @@ const Dashboard: React.FC = () => {
 const [articleToBlock, setArticleToBlock] = useState<string | null>(null);
   const articlesPerPage = 9;
   const preferences = useSelector((state: any) => state.auth.user?.user.preferences);
+  const userId = useSelector((state: any) => state.auth.user?.user._id);
+
 
   useEffect( () => {
-    const userId = getUserId();
+    
     setCurrentUserId( userId);
     fetchAllArticles();
   }, []);
