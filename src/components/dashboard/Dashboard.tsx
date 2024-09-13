@@ -32,9 +32,10 @@ const Dashboard: React.FC = () => {
 const [articleToBlock, setArticleToBlock] = useState<string | null>(null);
   const articlesPerPage = 9;
   const preferences = useSelector((state: any) => state.auth.user?.user.preferences);
+  const userId =   useSelector((state: any) => state.auth.user?.user._id);
 
   useEffect(() => {
-    const userId =   useSelector((state: any) => state.auth.user?.user._id);
+    
     setCurrentUserId( userId);
     fetchAllArticles();
   }, []);
