@@ -30,6 +30,8 @@ const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [isBlockModalOpen, setIsBlockModalOpen] = useState(false);
+  const [isBlocking, setIsBlocking] = useState(false);
+  
 const [articleToBlock, setArticleToBlock] = useState<string | null>(null);
   const articlesPerPage = 9;
   const preferences = useSelector((state: any) => state.auth.user?.user.preferences);
@@ -134,7 +136,7 @@ const [articleToBlock, setArticleToBlock] = useState<string | null>(null);
   
   const handleBlock = async () => {
     if (!currentUserId || !articleToBlock) return;
-    
+    setIsBlocking(true);
     updateArticleState(articleToBlock, article => ({
       ...article,
       blocks: [...article.blocks, currentUserId]
@@ -148,6 +150,8 @@ const [articleToBlock, setArticleToBlock] = useState<string | null>(null);
     } catch (error) {
       console.error('Error blocking article:', error);
       fetchAllArticles();
+    }finally {
+      setIsBlocking(false);
     }
   };
 
@@ -340,7 +344,7 @@ const [articleToBlock, setArticleToBlock] = useState<string | null>(null);
   onClose={() => setIsBlockModalOpen(false)}
   onConfirm={handleBlock}
   message='Are you sure you want to block this article?'
-  isDelete={false}
+  isDelete={isBlocking}
 />
     </div>
   );

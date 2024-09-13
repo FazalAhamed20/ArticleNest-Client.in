@@ -99,6 +99,7 @@ const UserProfilePage: React.FC = () => {
   const [isUnblockModalOpen, setIsUnblockModalOpen] = useState(false);
   const [articleToUnblock, setArticleToUnblock] = useState<number | null>(null);
   const [isLoadingArticles, setIsLoadingArticles] = useState(true);
+  const [isUnblock,setIsUnblock]=useState(false)
   const [isLoadingBlockedArticles, setIsLoadingBlockedArticles] = useState(true);
   const navigate = useNavigate();
   const userId =   useSelector((state: any) => state.auth.user?.user._id);
@@ -143,6 +144,7 @@ const UserProfilePage: React.FC = () => {
 
   const handleUnblock = async () => {
     if (articleToUnblock === null) return;
+    setIsUnblock(true)
 
     try {
      
@@ -152,6 +154,8 @@ const UserProfilePage: React.FC = () => {
       setArticleToUnblock(null);
     } catch (error) {
       console.error('Error unblocking article:', error);
+    }finally{
+      setIsUnblock(false)
     }
   };
 
@@ -287,7 +291,7 @@ const UserProfilePage: React.FC = () => {
         onClose={() => setIsUnblockModalOpen(false)}
         onConfirm={handleUnblock}
         message='Are you sure you want to unblock the article'
-        isDelete={false}
+        isDelete={isUnblock}
       />
     </div>
   );
