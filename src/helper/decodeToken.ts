@@ -8,6 +8,8 @@ interface DecodedToken {
 const getUserIdFromToken = (token: string): string | null => {
   try {
     const decodedToken = jwtDecode<DecodedToken>(token);
+    console.log(decodedToken);
+    
     return decodedToken._id;
   } catch (error) {
     console.error('Failed to decode access token:', error);
@@ -24,6 +26,8 @@ export const getUserId = () => {
       .find(row => row.startsWith(`${name}=`))
       ?.split('=')[1];
   };
+  console.log(getCookieValue);
+  
 
   const accessToken = getCookieValue('access_token');
   if (accessToken) {

@@ -1,71 +1,65 @@
 // src/config/AxiosInstance.ts
 import axios, {
-  AxiosInstance,
-  InternalAxiosRequestConfig,
-  AxiosResponse,
-  AxiosError,
-} from 'axios';
+    AxiosInstance,
+    InternalAxiosRequestConfig,
+    AxiosResponse,
+    AxiosError,
+  } from 'axios';
+  
+  
+  interface ErrorResponse {
+    message: string;
+  }
+  
+   const Url = import.meta.env.VITE_BASE_URL as string;
 
-interface ErrorResponse {
-  message: string;
-}
-
-const Url = import.meta.env.VITE_BASE_URL as string;
-
-console.log('Base URL:', Url);
-
-const createAxiosInstance = (baseURL: string): AxiosInstance => {
-  const instance = axios.create({
+  console.log('Base URL:', Url);
+  
+  const createAxiosInstance = (baseURL: string): AxiosInstance => {
+    const instance = axios.create({
       baseURL,
       withCredentials: true,
-      headers: {
-       
-          'Content-Type': 'application/json',
-          'Custom-Header': 'YourCustomValue', 
-      },
-  });
-
- 
-  instance.interceptors.request.use(
+    });
+  
+    instance.interceptors.request.use(
       (request: InternalAxiosRequestConfig) => {
-          
-          const token = localStorage.getItem('access_token'); 
-          if (token) {
-              request.headers['Authorization'] = `Bearer ${token}`;
-          }
-          return request;
+       
+        return request;
       },
       (error: AxiosError) => {
-          return Promise.reject(error);
+        
+        return Promise.reject(error);
       }
-  );
-
-  instance.interceptors.response.use(
+    );
+  
+    instance.interceptors.response.use(
       (response: AxiosResponse) => {
-          return response;
+        
+        return response;
       },
       async (error: AxiosError<ErrorResponse>) => {
-          const originalRequest = error.config as InternalAxiosRequestConfig & {
-              _retry?: boolean;
-          };
-
-          if (error.response?.status === 500) {
-              console.error('Internal Server Error (500):', error.response.data.message);
-              return Promise.reject(error);
-          }
-
-          if (error.response?.status === 401 && !originalRequest._retry) {
-              originalRequest._retry = true;
-            
-          }
-
+        const originalRequest = error.config as InternalAxiosRequestConfig & {
+          _retry?: boolean;
+        };
+  
+        if (error.response?.status === 500) {
+          console.error('Internal Server Error (500):', error.response.data.message);
           return Promise.reject(error);
+        }
+  
+        if (error.response?.status === 401 && !originalRequest._retry) {
+          originalRequest._retry = true;
+          
+        }
+  
+        return Promise.reject(error);
       }
-  );
-
-  return instance;
-};
-
-const baseAxios = createAxiosInstance(Url);
-
-export default baseAxios;
+    );
+  
+    return instance;
+  };
+  
+  const baseAxios = createAxiosInstance(Url);
+  
+  export default baseAxios;
+  
