@@ -3,20 +3,31 @@ import { FaEdit, FaTrash, FaThumbsUp, FaThumbsDown, FaBan } from 'react-icons/fa
 import { Article } from '../../types/userData';
 
 interface ArticleCardProps {
-  article: Article;
+  article: Article | null;
   onEdit: () => void;
   onDelete: () => void;
-  isArticles: boolean;
+  isLoading: boolean;
 }
 
-const ArticleCard: React.FC<ArticleCardProps> = ({ article, onEdit, onDelete, isArticles }) => {
-  if (isArticles) {
+const ArticleCard: React.FC<ArticleCardProps> = ({ article, onEdit, onDelete, isLoading  }) => {
+  if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-500"></div>
+      <div className="bg-white p-6 rounded-lg shadow-md animate-pulse">
+        <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+        <div className="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
+        <div className="h-20 bg-gray-200 rounded mb-4"></div>
+        <div className="flex justify-between items-center">
+          <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+          <div className="flex space-x-2">
+            <div className="w-8 h-8 bg-gray-200 rounded"></div>
+            <div className="w-8 h-8 bg-gray-200 rounded"></div>
+          </div>
+        </div>
       </div>
     );
   }
+
+  if (!article) return null;
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
