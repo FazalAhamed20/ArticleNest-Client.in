@@ -30,6 +30,8 @@ export const getUserId = () => {
   
 
   const accessToken = getCookieValue('access_token');
+  console.log("accessToken",accessToken);
+  
   if (accessToken) {
     return getUserIdFromToken(accessToken);
   }
