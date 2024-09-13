@@ -22,6 +22,7 @@ const UserArticleManagement: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const articlesPerPage = 6;
   const dispatch: AppDispatch = useDispatch();
+  const userId =  useSelector((state: any) => state.auth.user?.user._id);
 
   useEffect(() => {
     fetchArticle();
@@ -31,7 +32,7 @@ const UserArticleManagement: React.FC = () => {
 
   const fetchArticle = async () => {
     try {
-      const userId =  useSelector((state: any) => state.auth.user?.user._id);;
+     
       const response = await baseAxios.get('/articles', { params: { userId } });
       setArticles(response.data.data);
     } catch (error) {
@@ -52,7 +53,7 @@ const UserArticleManagement: React.FC = () => {
   const handleSave = async (article: Article) => {
     setIsLoading(true)
     let cloudinaryUrl = article.image;
-    const userId =  useSelector((state: any) => state.auth.user?.user._id);;
+   
 
     if (article.image instanceof File) {
       try {
