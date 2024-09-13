@@ -1,9 +1,8 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { validationSchema } from '../validation/EditProfile';
 import { AppDispatch } from '../../redux/Store';
-import { getUserId } from '../../helper/decodeToken';
 import Select from 'react-select';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
@@ -58,7 +57,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onClose, us
           }}
           validationSchema={validationSchema}
           onSubmit={async (values, { setSubmitting }) => {
-            const userId = getUserId();
+            const userId =   useSelector((state: any) => state.auth.user?.user._id);
             console.log(values);
             
             await dispatch(updateUserProfile({ ...values, userId }));

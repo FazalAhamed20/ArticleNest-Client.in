@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../../redux/Store';
 import baseAxios from '../../config/axiosInstance';
-import { getUserId } from '../../helper/decodeToken';
+
 import { Article } from '../../types/userData';
 import ArticleList from './ArticleList';
 import ArticleModal from '../../utils/modal/ArticalModal';
@@ -31,7 +31,7 @@ const UserArticleManagement: React.FC = () => {
 
   const fetchArticle = async () => {
     try {
-      const userId = getUserId();
+      const userId =  useSelector((state: any) => state.auth.user?.user._id);;
       const response = await baseAxios.get('/articles', { params: { userId } });
       setArticles(response.data.data);
     } catch (error) {
@@ -52,7 +52,7 @@ const UserArticleManagement: React.FC = () => {
   const handleSave = async (article: Article) => {
     setIsLoading(true)
     let cloudinaryUrl = article.image;
-    const userId = getUserId();
+    const userId =  useSelector((state: any) => state.auth.user?.user._id);;
 
     if (article.image instanceof File) {
       try {

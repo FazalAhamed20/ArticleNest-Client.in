@@ -3,7 +3,7 @@ import { FaEnvelope, FaPhone, FaCalendar, FaEdit, FaBook, FaHeart, FaLock, FaUnl
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../../redux/Store';
 import { resetPassword } from '../../redux/actions/authAction';
-import { getUserId } from '../../helper/decodeToken';
+
 import EditProfileModal from '../../utils/modal/EditProfileModal';
 import {  useNavigate } from 'react-router-dom';
 import baseAxios from '../../config/axiosInstance';
@@ -29,7 +29,7 @@ const ChangePasswordModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
 
   const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
-    const userId = getUserId()
+    const userId =   useSelector((state: any) => state.auth.user?.user._id)
     console.log(userId);
     
     await dispatch(resetPassword({ oldPassword, newPassword, userId }))
@@ -106,7 +106,7 @@ const UserProfilePage: React.FC = () => {
 
   const fetchArticles = async () => {
     try {
-      const userId = getUserId();
+      const userId =   useSelector((state: any) => state.auth.user?.user._id);
       const response = await baseAxios.get('/articles', { params: { userId } });
       const sortedArticles = response.data.data.sort((a: Article, b: Article) => 
         new Date(b.date).getTime() - new Date(a.date).getTime()
@@ -119,7 +119,7 @@ const UserProfilePage: React.FC = () => {
 
   const fetchBlockedArticles = async () => {
     try {
-      const userId = getUserId();
+      const userId = useSelector((state: any) => state.auth.user?.user._id);
       const response = await baseAxios.get('/blocked-articles', { params: { userId } });
       console.log("blocked ",response);
       
@@ -138,7 +138,7 @@ const UserProfilePage: React.FC = () => {
     if (articleToUnblock === null) return;
 
     try {
-      const userId = getUserId();
+      const userId = useSelector((state: any) => state.auth.user?.user._id);
       await baseAxios.post(`/unblock-article/${articleToUnblock}`, { userId });
       setBlockedArticles(blockedArticles.filter(article => article.id !== articleToUnblock));
       setIsUnblockModalOpen(false);

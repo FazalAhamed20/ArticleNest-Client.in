@@ -1,4 +1,5 @@
 export type Signup = {
+  _id?:any;
     firstName?: string;
     lastName?: string;
     email?: string;

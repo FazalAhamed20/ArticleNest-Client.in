@@ -11,7 +11,7 @@ import axios, {
     message: string;
   }
   
-   const Url = import.meta.env.VITE_BASE_URL as string;
+   const Url = import.meta.env.VITE_BASE_URL as string 
 
   console.log('Base URL:', Url);
   
