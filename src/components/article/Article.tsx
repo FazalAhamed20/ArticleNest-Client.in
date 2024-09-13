@@ -19,6 +19,7 @@ const UserArticleManagement: React.FC = () => {
   const [articleToDelete, setArticleToDelete] = useState<number | null>(null);
   const [isLoading,setIsLoading]=useState(false)
   const [isDelete,setIsDelete]=useState(false)
+  const [isArticles,setIsArticles]=useState(false)
   const [currentPage, setCurrentPage] = useState(1);
   const articlesPerPage = 6;
   const dispatch: AppDispatch = useDispatch();
@@ -31,12 +32,15 @@ const UserArticleManagement: React.FC = () => {
   
 
   const fetchArticle = async () => {
+    setIsArticles(true)
     try {
      
       const response = await baseAxios.get('/articles', { params: { userId } });
       setArticles(response.data.data);
     } catch (error) {
       console.error('Error fetching user data:', error);
+    }finally{
+      setIsArticles(false)
     }
   };
 
@@ -124,6 +128,7 @@ const UserArticleManagement: React.FC = () => {
         articles={currentArticles}
         openModal={openModal}
         openDeleteModal={openDeleteModal}
+        isArticles={isArticles}
       />
 
       <Pagination

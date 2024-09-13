@@ -98,6 +98,8 @@ const UserProfilePage: React.FC = () => {
   const [blockedArticles, setBlockedArticles] = useState<BlockedArticle[]>([]);
   const [isUnblockModalOpen, setIsUnblockModalOpen] = useState(false);
   const [articleToUnblock, setArticleToUnblock] = useState<number | null>(null);
+  const [isLoadingArticles, setIsLoadingArticles] = useState(true);
+  const [isLoadingBlockedArticles, setIsLoadingBlockedArticles] = useState(true);
   const navigate = useNavigate();
   const userId =   useSelector((state: any) => state.auth.user?.user._id);
 
@@ -107,8 +109,8 @@ const UserProfilePage: React.FC = () => {
   }, []);
 
   const fetchArticles = async () => {
+    setIsLoadingArticles(true);
     try {
-      
       const response = await baseAxios.get('/articles', { params: { userId } });
       const sortedArticles = response.data.data.sort((a: Article, b: Article) => 
         new Date(b.date).getTime() - new Date(a.date).getTime()
@@ -116,18 +118,21 @@ const UserProfilePage: React.FC = () => {
       setArticles(sortedArticles.slice(0, 3));
     } catch (error) {
       console.error('Error fetching user data:', error);
+    } finally {
+      setIsLoadingArticles(false);
     }
   };
 
   const fetchBlockedArticles = async () => {
+    setIsLoadingBlockedArticles(true);
     try {
-     
       const response = await baseAxios.get('/blocked-articles', { params: { userId } });
-      console.log("blocked ",response);
-      
+      console.log("blocked ", response);
       setBlockedArticles(response.data.data);
     } catch (error) {
       console.error('Error fetching blocked articles:', error);
+    } finally {
+      setIsLoadingBlockedArticles(false);
     }
   };
 
@@ -209,20 +214,28 @@ const UserProfilePage: React.FC = () => {
           <div className="md:col-span-2 bg-white shadow-md rounded-lg overflow-hidden">
             <div className="p-6">
               <h2 className="text-2xl font-bold mb-4 text-gray-800">Recent Articles</h2>
-              <div className="space-y-6">
-                {articles.map((article) => (
-                  <div key={article.id} className="border-b border-gray-200 pb-4 last:border-b-0">
-                    <h3 className="text-lg font-semibold mb-2 text-gray-700">{article.title}</h3>
-                    <p className="text-gray-600 mb-2">{article.description}</p>
-                    <div className="flex items-center text-sm text-gray-500">
-                      <FaCalendar className="mr-2" />
-                      <span>{new Date(article.date).toLocaleDateString()}</span>
+              {isLoadingArticles ? (
+                <div className="flex justify-center items-center h-40">
+                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
+                </div>
+              ) : articles.length === 0 ? (
+                <p className="text-gray-600">No recent articles.</p>
+              ) : (
+                <div className="space-y-6">
+                  {articles.map((article) => (
+                    <div key={article.id} className="border-b border-gray-200 pb-4 last:border-b-0">
+                      <h3 className="text-lg font-semibold mb-2 text-gray-700">{article.title}</h3>
+                      <p className="text-gray-600 mb-2">{article.description}</p>
+                      <div className="flex items-center text-sm text-gray-500">
+                        <FaCalendar className="mr-2" />
+                        <span>{new Date(article.date).toLocaleDateString()}</span>
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
               <button className="w-full mt-6 flex items-center justify-center px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
-              onClick={()=>{navigate('/article')}}>
+                onClick={() => { navigate('/article') }}>
                 <FaBook className="mr-2" /> View All Articles
               </button>
             </div>
@@ -230,25 +243,29 @@ const UserProfilePage: React.FC = () => {
           <div className="md:col-span-3 bg-white shadow-md rounded-lg overflow-hidden mt-6">
             <div className="p-6">
               <h2 className="text-2xl font-bold mb-4 text-gray-800">Blocked Articles</h2>
-              {blockedArticles.length === 0 ? (
+              {isLoadingBlockedArticles ? (
+                <div className="flex justify-center items-center h-40">
+                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
+                </div>
+              ) : blockedArticles.length === 0 ? (
                 <p className="text-gray-600">No blocked articles.</p>
               ) : (
                 <div className="space-y-4">
-      {blockedArticles.map((article) => (
-        <div key={article.id} className="flex flex-col border-b border-gray-200 pb-4 last:border-b-0">
-          <div className="flex justify-between items-start mb-2">
-            <h3 className="text-lg font-semibold text-gray-700">{article.title}</h3>
-            <button
-              onClick={() => handleUnblockClick(article.id)}
-              className="flex items-center px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
-            >
-              <FaUnlock className="mr-2" /> Unblock
-            </button>
-          </div>
-          <p className="text-gray-600">{article.description}</p>
-        </div>
-      ))}
-    </div>
+                  {blockedArticles.map((article) => (
+                    <div key={article.id} className="flex flex-col border-b border-gray-200 pb-4 last:border-b-0">
+                      <div className="flex justify-between items-start mb-2">
+                        <h3 className="text-lg font-semibold text-gray-700">{article.title}</h3>
+                        <button
+                          onClick={() => handleUnblockClick(article.id)}
+                          className="flex items-center px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+                        >
+                          <FaUnlock className="mr-2" /> Unblock
+                        </button>
+                      </div>
+                      <p className="text-gray-600">{article.description}</p>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
           </div>
