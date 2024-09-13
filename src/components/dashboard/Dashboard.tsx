@@ -33,11 +33,20 @@ const Dashboard: React.FC = () => {
 const [articleToBlock, setArticleToBlock] = useState<string | null>(null);
   const articlesPerPage = 9;
   const preferences = useSelector((state: any) => state.auth.user?.user.preferences);
-
+  
   useEffect(() => {
-    const userId = getUserId();
-    setCurrentUserId(userId);
-    fetchAllArticles();
+    const setUser = async () => {
+      try {
+        const userId = await getUserId();
+        setCurrentUserId(userId);
+        await fetchAllArticles(); 
+      } catch (error) {
+        console.error('Error setting user:', error);
+       
+      }
+    };
+
+    setUser();
   }, []);
 
   const fetchAllArticles = async () => {
