@@ -61,10 +61,12 @@ const Login: React.FC<LoginProps> = () => {
     console.log('Login attempt:', values);
     const response = await dispatch(login(values));
     console.log(response);
+
     if (response.payload?.success == true) {
-      setLoading(false)
+      
       navigate('/dashboard');
     }
+    setLoading(false)
     
     setSubmitting(false);
   };
