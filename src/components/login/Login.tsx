@@ -9,6 +9,7 @@ import { login } from '../../redux/actions/authAction';
 import { useNavigate } from 'react-router-dom';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
+import { ClipLoader } from "react-spinners";
 
 interface LoginProps {}
 
@@ -28,6 +29,7 @@ interface FormValues {
 const Login: React.FC<LoginProps> = () => {
   const [loginMethod, setLoginMethod] = useState<LoginMethod>('email');
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [loading,setLoading]=useState(false)
 
   const togglePassword = (): void => setShowPassword(!showPassword);
   const dispatch: AppDispatch = useDispatch();
@@ -55,10 +57,12 @@ const Login: React.FC<LoginProps> = () => {
   
 
   const handleSubmit = async(values: FormValues, { setSubmitting }: FormikHelpers<FormValues>) => {
+    setLoading(true)
     console.log('Login attempt:', values);
     const response = await dispatch(login(values));
     console.log(response);
     if (response.payload?.success == true) {
+      setLoading(false)
       navigate('/dashboard');
     }
     
@@ -183,13 +187,22 @@ const Login: React.FC<LoginProps> = () => {
                 <ErrorMessage name="password" component="div" className="mt-1 text-sm text-red-600" />
               </div>
               <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-              >
-                Sign in
-              </motion.button>
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              type="submit"
+              disabled={loading}
+              className={`w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
+                loading
+                  ? "bg-gray-600 cursor-not-allowed"
+                  : "bg-gray-800 hover:bg-gray-700"
+              } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500`}
+            >
+              {loading ? (
+                <ClipLoader color="#ffffff" loading={loading} size={20} />
+              ) : (
+                "Sign Up"
+              )}
+            </motion.button>
             </Form>
           )}
         </Formik>
