@@ -20,11 +20,15 @@ const getUserIdFromToken = (token: string): string | null => {
 export default getUserIdFromToken;
 
 export const getUserId = () => {
-  const getCookieValue = (name:any) => {
-    return document.cookie
+  const getCookieValue = (name: string): string | undefined => {
+    console.log('All cookies:', document.cookie);
+    const cookieString = document.cookie
       .split('; ')
-      .find(row => row.startsWith(`${name}=`))
-      ?.split('=')[1];
+      .find(row => row.startsWith(`${name}=`));
+    console.log(`Cookie string for ${name}:`, cookieString);
+    const value = cookieString?.split('=')[1];
+    console.log(`Value for ${name}:`, value);
+    return value;
   };
   console.log(getCookieValue);
   
