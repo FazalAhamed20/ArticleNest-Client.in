@@ -17,7 +17,7 @@ To run this project, you will need to add the following environment variables to
 To deploy this project run
 
 ```bash
-  npm start
+  npm run dev
 ```
 
 
@@ -50,7 +50,7 @@ Install dependencies
 Start the server
 
 ```bash
-  npm  start
+  npm  run dev
 ```
 
 
