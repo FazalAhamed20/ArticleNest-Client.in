@@ -1,8 +1,5 @@
 import * as Yup from 'yup';
 
-const oneMonthAgo = new Date();
-oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-
 export const userSignupValidation = Yup.object({
   firstName: Yup.string()
     .min(4, 'Name must be greater than 3 characters')
@@ -20,8 +17,7 @@ export const userSignupValidation = Yup.object({
     .matches(/^\d{10,15}$/, 'Phone number must be between 10 and 15 digits')
     .required('Phone number is required'),
   dateOfBirth: Yup.date()
-    .max(new Date(), 'Date of birth cannot be in the future')
-    .min(oneMonthAgo, 'Date of birth must be at leeast one monh ago')
+    .max(new Date(new Date().setFullYear(new Date().getFullYear() - 1)), 'You must be at least 1 year old')
     .required('Date of birth is required'),
   password: Yup.string()
     .required('Please enter your password')
