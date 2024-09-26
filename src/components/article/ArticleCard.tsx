@@ -31,6 +31,9 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article, onEdit, onDelete, is
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
+      {article.image && (
+        <img    src={typeof article.image === 'string' ? article.image : URL.createObjectURL(article.image)}  alt={article.title} className="w-full h-48 object-cover rounded mb-4" />
+      )}
       <h2 className="text-xl font-semibold text-gray-800 mb-2">{article.title}</h2>
       <p className="text-gray-600 mb-4">{article.description}</p>
       <p className="text-gray-600 mb-4">{article.content.substring(0, 100)}...</p>
